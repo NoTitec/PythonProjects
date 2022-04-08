@@ -109,6 +109,6 @@ def download_data(url, dir_name, file_name):
   if not os.path.isdir(dir_name):
 	  os.makedirs(dir_name)
   file_path = os.path.join(dir_name,file_name)
-  urllib.request.urlretrieve(url, file_path)
+  urllib.request.urlretrieve(url, file_path)# ?
 
 download_data("https://www.openml.org/data/get_csv/61/dataset_61_iris.arff", "F:\PycharmProjects\Artificailintelligent", "iris.csv")
