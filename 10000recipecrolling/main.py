@@ -128,5 +128,5 @@ class MysqlController:
 
 
 mydb=MysqlController('localhost','root','root','food')
-CrawlingBetweenRanges(mydb,1460120,7000000)
-#CrawlingBetweenRanges(mydb,6900000,7000000)
+#CrawlingBetweenRanges(mydb,1460120,7000000)
+CrawlingBetweenRanges(mydb,6900000,7000000)
