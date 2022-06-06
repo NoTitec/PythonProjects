@@ -52,7 +52,7 @@ options.add_argument('--disable-gpu')
 
 
 def get_video(feature):
-
+    #크롬드라이버 현재 컴퓨터 버전맞는 드라이버 경로지정해야함
     driver = webdriver.Chrome(r"C:\\PythonProjects\\youtubeclooling\\venv\\Scripts\\chromedriver.exe",chrome_options=options)
     driver.set_window_size(700,100)
     driver.get('https://www.youtube.com')
@@ -177,5 +177,5 @@ class MysqlController:
 
 
 
-mysql_controller = MysqlController('localhost', 'root', 'root', 'testrecommenddb')
+mysql_controller = MysqlController('localhost', 'root', 'root', 'recommendfood')
 mysql_controller.insert_youtube()

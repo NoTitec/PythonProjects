@@ -1,4 +1,3 @@
-
 from simpleai.search import astar, SearchProblem ,greedy,uniform_cost
 
 #목표상태
