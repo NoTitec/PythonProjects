@@ -1,0 +1,3 @@
+Go to File->Settings->Project Interpreter and then add by '+' button 'opencv-python' module on this repository.
+
+It downloaded without an error for my PyCharm and also downloaded the dependencies as well.
