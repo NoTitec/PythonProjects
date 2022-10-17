@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 from matplotlib import pyplot as plt
 def print_original_image():
     image = cv2.imread('WIN_20221006_15_40_47_Pro.jpg', cv2.IMREAD_COLOR)
@@ -74,7 +75,51 @@ def histogram_Equalization():
 
     cv2.waitKey(0)
 
+def avg_filtering():
+    o_image = cv2.imread('WIN_20221006_15_40_47_Pro.jpg')
+    g_image = cv2.cvtColor(o_image, cv2.COLOR_BGR2GRAY)
+
+    #avg_filter
+    avg_image=cv2.blur(g_image,(5,5))
+    cv2.imshow('origin image',g_image)
+    cv2.imshow('Average filtered image',avg_image)
+    cv2.waitKey(0)
+
+def Gaussian_filtering():
+    o_image = cv2.imread('WIN_20221006_15_40_47_Pro.jpg')
+    g_image = cv2.cvtColor(o_image, cv2.COLOR_BGR2GRAY)
+
+    #Gaussian_filtering
+    gau_image=cv2.GaussianBlur(g_image,(5,5),0)
+    cv2.imshow('Gaussian filtered image', gau_image)
+    cv2.waitKey(0)
+
+def Median_filtering():
+    o_image = cv2.imread('WIN_20221006_15_40_47_Pro.jpg')
+    g_image = cv2.cvtColor(o_image, cv2.COLOR_BGR2GRAY)
+
+    #Medianfilter
+    m_image=cv2.medianBlur(g_image,5)
+    cv2.imshow('Median filtered image',m_image)
+    cv2.waitKey(0)
+def high_hartz_filtering():
+    o_image = cv2.imread('WIN_20221006_15_40_47_Pro.jpg')
+    g_image = cv2.cvtColor(o_image, cv2.COLOR_BGR2GRAY)
+
+    #high_filter
+    kernel=np.array([[0,-1,0],
+                    [-1,4,-1],
+                    [0,-1,0]])
+
+    h_image=cv2.filter2D(g_image,-1,kernel)
+    cv2.imshow('high filter image',h_image)
+    cv2.waitKey(0)
+
 #print_original_image() # 원본 이미지 출력
 #print_histogram() #입력 이미지 gray 전환 후 gray 이미지, 히스토그램 출력
 #histogram_stretching()    #gray 이미지 전환후 히스토그램 스트레칭하여 출력
-histogram_Equalization()    #gray 이미지 전환후 히스토그램 평준화하여 출력
+#histogram_Equalization()    #gray 이미지 전환후 히스토그램 평준화하여 출력
+#avg_filtering()
+#Gaussian_filtering()
+#high_hartz_filtering()
+Median_filtering()
