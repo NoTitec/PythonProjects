@@ -12,20 +12,52 @@ def capture_webcam_image_save():
     print('Frame width {},height{}'.format(wth,hit))
 
     fourcc=cv2.VideoWriter_fourcc(*'DIVX')
-    video=cv2.VideoWriter('20191320 권순혁.avi',fourcc,30.0,(640,480))
-
+    video = cv2.VideoWriter('20191320 권순혁.avi', fourcc, 30.0, (640, 480), isColor=False)
 
     while(cv2.waitKey(32)<0):
         ret,frame=capture.read()
         if not ret:
             break
+        gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
 
-        cv2.imshow("Frame",frame)
+        cv2.imshow("Frame",gray)
 
-        video.write(frame)
+        video.write(gray)
 
     capture.release()
     video.release()
+def video_Thresholding_filtering():
+    video=cv2.VideoCapture('20191320 권순혁.avi')
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    thresholdvideo = cv2.VideoWriter('20191320 권순혁_Threshold.avi', fourcc, 30.0, (640, 480),False)
+    while(cv2.waitKey(32)<0):
+        ret,frame=video.read()
+        if not ret:
+            break
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        tret,os_frame=cv2.threshold(gray,128,255,cv2.THRESH_OTSU)
+        if not tret:
+            print("error")
+        cv2.imshow("result",os_frame)
+        thresholdvideo.write(os_frame)
+    video.release()
+    thresholdvideo.release()
+
+def video_Sobel_filtering():
+    video = cv2.VideoCapture('20191320 권순혁.avi')
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    sobelvideo = cv2.VideoWriter('20191320 권순혁_Sobel.avi', fourcc, 30.0, (640, 480), False)
+    while (cv2.waitKey(32) < 0):
+        ret, frame = video.read()
+        if not ret:
+            break
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        s_videoXY=cv2.Sobel(gray,cv2.CV_8U,1,1,ksize=3)
+        n_image = cv2.normalize(s_videoXY, None, 0, 255, cv2.NORM_MINMAX)
+        cv2.imshow("result",n_image)
+        sobelvideo.write(n_image)
+    video.release()
+    sobelvideo.release()
 def print_histogram():
     o_image=cv2.imread('WIN_20221006_15_40_47_Pro.jpg')
     g_image=cv2.cvtColor(o_image,cv2.COLOR_BGR2GRAY)
@@ -116,10 +148,13 @@ def high_hartz_filtering():
     cv2.waitKey(0)
 
 #print_original_image() # 원본 이미지 출력
+#capture_webcam_image_save()# 웹캠 graysacle 영상 촬영 저장
+#video_Thresholding_filtering()
+video_Sobel_filtering()
 #print_histogram() #입력 이미지 gray 전환 후 gray 이미지, 히스토그램 출력
 #histogram_stretching()    #gray 이미지 전환후 히스토그램 스트레칭하여 출력
 #histogram_Equalization()    #gray 이미지 전환후 히스토그램 평준화하여 출력
 #avg_filtering()
 #Gaussian_filtering()
 #high_hartz_filtering()
-Median_filtering()
+#Median_filtering()
