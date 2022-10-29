@@ -58,6 +58,70 @@ def video_Sobel_filtering():
         sobelvideo.write(n_image)
     video.release()
     sobelvideo.release()
+
+def video_Canny_filtering():
+    video = cv2.VideoCapture('20191320 권순혁.avi')
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    cannyvideo = cv2.VideoWriter('20191320 권순혁_Canny.avi', fourcc, 30.0, (640, 480), False)
+    while (cv2.waitKey(32) < 0):
+        ret, frame = video.read()
+        if not ret:
+            break
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        cannyframe=cv2.Canny(gray,10,50)
+        #n_image = cv2.normalize(s_videoXY, None, 0, 255, cv2.NORM_MINMAX)
+        cv2.imshow("result",cannyframe)
+        cannyvideo.write(cannyframe)
+    video.release()
+    cannyvideo.release()
+
+def video_hough_transform():
+    video = cv2.VideoCapture('20191320 권순혁.avi')
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    hough_video = cv2.VideoWriter('20191320 권순혁_Hough.avi', fourcc, 30.0, (640, 480), False)
+    while (cv2.waitKey(32) < 0):
+        ret, frame = video.read()
+        if not ret:
+            break
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        blurframe=cv2.blur(gray,(5,5))
+        cannyframe=cv2.Canny(blurframe,50,150)
+        lines=cv2.HoughLines(cannyframe,1,np.pi/180,100)
+        scale=frame.shape[0]+frame.shape[1]
+        for line in lines:
+            rho,theta=line[0]
+            a=np.cos(theta)
+            b=np.sin(theta)
+            x0=a*rho
+            y0=b*rho
+            x1=int(x0+scale*(-b))
+            y1=int(y0+scale*(a))
+            x2=int(x0-scale*(-b))
+            y2=int(y0-scale*(a))
+            cv2.line(gray,(x1,y1),(x2,y2),(255,0,255),1)
+            cv2.imshow("line",gray)
+        hough_video.write(gray)
+    video.release()
+    hough_video.release()
+
+
+def two_video_to_one():
+    video = cv2.VideoCapture('20191320 권순혁.avi')
+    video2 = cv2.VideoCapture('20191320 권순혁_Hough.avi')
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    two_video = cv2.VideoWriter('20191320 권순혁_Origin_Hough.avi', fourcc, 30.0, (1280, 480), False)
+    while (cv2.waitKey(32) < 0):
+        ret, frame = video.read()
+        ret2, frame2 = video2.read()
+        if not ret:
+            break
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
+        concate_horizontalframe=cv2.hconcat([gray,gray2])
+        cv2.imshow("concat_result",concate_horizontalframe)
+        two_video.write(concate_horizontalframe)
+    video.release()
+    two_video.release()
 def print_histogram():
     o_image=cv2.imread('WIN_20221006_15_40_47_Pro.jpg')
     g_image=cv2.cvtColor(o_image,cv2.COLOR_BGR2GRAY)
@@ -150,7 +214,7 @@ def high_hartz_filtering():
 #print_original_image() # 원본 이미지 출력
 #capture_webcam_image_save()# 웹캠 graysacle 영상 촬영 저장
 #video_Thresholding_filtering()
-video_Sobel_filtering()
+#video_Sobel_filtering()
 #print_histogram() #입력 이미지 gray 전환 후 gray 이미지, 히스토그램 출력
 #histogram_stretching()    #gray 이미지 전환후 히스토그램 스트레칭하여 출력
 #histogram_Equalization()    #gray 이미지 전환후 히스토그램 평준화하여 출력
@@ -158,3 +222,6 @@ video_Sobel_filtering()
 #Gaussian_filtering()
 #high_hartz_filtering()
 #Median_filtering()
+#video_Canny_filtering()
+#video_hough_transform()
+two_video_to_one()
