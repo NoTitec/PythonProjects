@@ -5,6 +5,34 @@ def print_original_image():
     image = cv2.imread('WIN_20221006_15_40_47_Pro.jpg', cv2.IMREAD_COLOR)
     cv2.imshow("Image", image)
     cv2.waitKey(0)
+def save_video_first_frame():
+    video=cv2.VideoCapture('videoresource/20191320 권순혁_Threshold.avi')
+
+    ret, frame = video.read()
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    cv2.imwrite('videoresource/orginimage.jpg', gray)
+
+def save_Thresholding_Dilation_Erosion_Opening():
+    image = cv2.imread('videoresource/orginimage.jpg', cv2.IMREAD_GRAYSCALE)
+    morph_elip = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    dilate_frame = cv2.dilate(image, morph_elip, iterations=1)
+    erosion_frame=cv2.erode(image,morph_elip,iterations=1)
+    opening_frame=cv2.morphologyEx(image,cv2.MORPH_OPEN,morph_elip,iterations=1)
+    cv2.imwrite('videoresource/delateimage.jpg', dilate_frame)
+    cv2.imwrite('videoresource/erosionimage.jpg', erosion_frame)
+    cv2.imwrite('videoresource/openingimage.jpg', opening_frame)
+def Dilation_video_show():
+    video=cv2.VideoCapture('videoresource/20191320 권순혁_Threshold.avi')
+    morph_elip=cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5))
+
+    while (cv2.waitKey(32) < 0):
+        ret, frame = video.read()
+        if not ret:
+            break
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #변환
+        trance_frame=cv2.dilate(gray,morph_elip,iterations=1)
+        cv2.imshow("result", trance_frame)
 def capture_webcam_image_save():
     capture=cv2.VideoCapture(0)
     wth=capture.get(cv2.CAP_PROP_FRAME_WIDTH)
@@ -224,4 +252,7 @@ def high_hartz_filtering():
 #Median_filtering()
 #video_Canny_filtering()
 #video_hough_transform()
-two_video_to_one()
+#two_video_to_one()
+#save_video_first_frame()
+#Dilation_video_show()
+save_Thresholding_Dilation_Erosion_Opening()
