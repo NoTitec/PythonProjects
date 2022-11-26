@@ -40,7 +40,7 @@ def capture_webcam_image_save():
     print('Frame width {},height{}'.format(wth,hit))
 
     fourcc=cv2.VideoWriter_fourcc(*'DIVX')
-    video = cv2.VideoWriter('20191320 권순혁.avi', fourcc, 30.0, (640, 480), isColor=False)
+    video = cv2.VideoWriter('20191320 권순혁_coin_video.avi', fourcc, 30.0, (640, 480), isColor=False)
 
     while(cv2.waitKey(32)<0):
         ret,frame=capture.read()
@@ -239,6 +239,69 @@ def high_hartz_filtering():
     cv2.imshow('high filter image',h_image)
     cv2.waitKey(0)
 
+def Circle_hough_transform():
+    video = cv2.VideoCapture('20191320 권순혁_coin_video.avi')
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    circlevideo = cv2.VideoWriter('20191320 권순혁_circlefind.avi', fourcc, 30.0, (640, 480))
+    while (cv2.waitKey(32) < 0):
+        ret, frame = video.read()
+        if not ret:
+            break
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,1,1500,param1=250,param2=10,minRadius=24,maxRadius=31)
+
+        for i in circles[0]:
+            cv2.circle(frame,(int(i[0]),int(i[1])),2,(255,0,0),2)
+            cv2.circle(frame,(int(i[0]),int(i[1])),int(i[2]),(0,0,255),5)
+
+
+        cv2.imshow("result", frame)
+        circlevideo.write(frame)
+    video.release()
+    circlevideo.release()
+
+def Harris_Corner_transform():
+    video = cv2.VideoCapture('20191320 권순혁.avi')
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    harrisvideo = cv2.VideoWriter('20191320 권순혁_hirris.avi', fourcc, 30.0, (640, 480),False)
+    while (cv2.waitKey(32) < 0):
+        ret, frame = video.read()
+        if not ret:
+            break
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        corner=cv2.cornerHarris(gray,2,3,0.04)
+
+        coord=np.where(corner>0.05*corner.max())
+        coord=np.stack((coord[1],coord[0]),axis=-1)
+
+        for(x,y) in coord:
+            cv2.circle(gray,(x,y),5,(0,0,255),1,cv2.LINE_AA)
+
+        #harrisframe=cv2.normalize(corner,None,0,255,cv2.NORM_MINMAX,cv2.CV_8U)
+
+        cv2.imshow("result", gray)
+        harrisvideo.write(gray)
+    video.release()
+    harrisvideo.release()
+
+def SIFT_transform():
+    video = cv2.VideoCapture('20191320 권순혁.avi')
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    SIFTvideo = cv2.VideoWriter('20191320 권순혁_SIFT.avi', fourcc, 30.0, (640, 480))
+    while (cv2.waitKey(32) < 0):
+        ret, frame = video.read()
+        if not ret:
+            break
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        sift_detector=cv2.xfeatures2d.SIFT_create()
+        keypoints,descriptor=sift_detector.detectAndCompute(gray,None)
+        ov_image=cv2.drawKeypoints(frame,keypoints,None,flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+        cv2.imshow("result", ov_image)
+        SIFTvideo.write(ov_image)
+    video.release()
+    SIFTvideo.release()
+
+
 #print_original_image() # 원본 이미지 출력
 #capture_webcam_image_save()# 웹캠 graysacle 영상 촬영 저장
 #video_Thresholding_filtering()
@@ -255,4 +318,7 @@ def high_hartz_filtering():
 #two_video_to_one()
 #save_video_first_frame()
 #Dilation_video_show()
-save_Thresholding_Dilation_Erosion_Opening()
+#save_Thresholding_Dilation_Erosion_Opening()
+#Circle_hough_transform()
+#Harris_Corner_transform()
+SIFT_transform()
