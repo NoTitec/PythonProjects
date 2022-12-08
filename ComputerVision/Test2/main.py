@@ -301,7 +301,61 @@ def SIFT_transform():
     video.release()
     SIFTvideo.release()
 
+def Region_Labeling():
+    originimage=cv2.imread('coins.bmp',cv2.IMREAD_UNCHANGED)
+    grayimage=cv2.cvtColor(originimage,cv2.COLOR_BGR2GRAY)
+    gau_image = cv2.GaussianBlur(grayimage, (7, 7), 0)
+    tret, os_frame = cv2.threshold(gau_image, 0, 255, cv2.THRESH_OTSU)
 
+    morph_elip = cv2.getStructuringElement(cv2.MORPH_RECT, (2,2))
+
+    erosion_frame = cv2.erode(os_frame, morph_elip, iterations=1)
+    cv2.imshow('erosion',erosion_frame)
+
+    cnt, labels = cv2.connectedComponents(erosion_frame)
+
+    print("erosion total count={}".format(cnt))
+
+    cv2.waitKey(0)
+
+def Watershed_Mouse_Click():
+    image=cv2.imread('WIN_20221006_15_40_47_Pro',cv2.IMREAD_UNCHANGED)
+    (hit,wth)=image.shape[0:2]
+
+    marker=np.zeros((hit,wth),np.int32)
+    marker_id=1
+    colors=[]
+
+    w_image=image.copy()
+
+def onMouse(event,x,y,flags,param):
+    image = cv2.imread('WIN_20221006_15_40_47_Pro', cv2.IMREAD_UNCHANGED)
+    (hit, wth) = image.shape[0:2]
+
+    marker = np.zeros((hit, wth), np.int32)
+    marker_id = 1
+    colors = []
+
+    w_image = image.copy()
+
+    if event == cv2.EVENT_LBUTTONDOWN:
+        marker[y,x]=marker_id
+        colors.append((marker_id,image[y,x]))
+        cv2.circle(w_image,(x,y),3,(0,0,255),-1)
+        cv2.imshow('image',w_image)
+        marker_id+=1
+
+    elif event ==cv2.EVENT_RBUTTONDOWN:
+        cv2.watershed(image,marker)
+        w_image[marker==-1]=(0,0,255)
+        for m_id,color in colors:
+            w_image[marker==m_id]=color
+        cv2.imshow('watershed',w_image)
+
+    cv2.imshow('image',image)
+
+    cv2.setMouseCallback('image',onMouse())
+    cv2.waitKey(0)
 #print_original_image() # 원본 이미지 출력
 #capture_webcam_image_save()# 웹캠 graysacle 영상 촬영 저장
 #video_Thresholding_filtering()
@@ -321,4 +375,7 @@ def SIFT_transform():
 #save_Thresholding_Dilation_Erosion_Opening()
 #Circle_hough_transform()
 #Harris_Corner_transform()
-SIFT_transform()
+#SIFT_transform()
+#Region_Labeling()
+
+onMouse()
